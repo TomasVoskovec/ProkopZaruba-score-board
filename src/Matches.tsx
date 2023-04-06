@@ -1,7 +1,12 @@
 import useFetch from './useFetch';
-import { useState, useEffect } from 'react';
+import { useEffect, Dispatch, SetStateAction } from 'react';
 interface Props {
   id: string;
+  URL: string;
+  setURL: Dispatch<SetStateAction<string>>;
+  currentRound: number;
+  setCurrentRound: React.Dispatch<React.SetStateAction<number>>;
+  now: Date;
 }
 
 interface Game {
@@ -13,41 +18,29 @@ interface Game {
 }
 
 const Matches = (props: Props) => {
-  const now: Date = new Date();
-  const start: Date = new Date(now.getFullYear(), 0, 0);
-  const diff: number = now.getTime() - start.getTime();
-  const oneDay = 1000 * 60 * 60 * 24;
-  const day = Math.floor(diff / oneDay);
-
-  const [currentRound, setCurrentRound] = useState<number>(
-    Math.floor((day - 66) / 7)
-  );
-  const [url, setUrl] = useState<string>(
-    `https://api.squiggle.com.au/?q=games;year=2023;round=${currentRound}`
-  );
-  const { data: matches, refetch } = useFetch(url, props.id);
+  const { data: matches, refetch } = useFetch(props.URL, props.id);
 
   useEffect(() => {
     refetch();
-  }, [url, refetch]);
+  }, [refetch, props.URL]);
 
   const decreaseRound = () => {
-    if (currentRound > 1) {
-      setCurrentRound(currentRound - 1);
-      setUrl(
+    if (props.currentRound > 1) {
+      props.setCurrentRound(props.currentRound - 1);
+      props.setURL(
         `https://api.squiggle.com.au/?q=games;year=2023;round=${
-          currentRound - 1
+          props.currentRound - 1
         }`
       );
     }
   };
 
   const increaseRound = () => {
-    if (currentRound < 24) {
-      setCurrentRound(currentRound + 1);
-      setUrl(
+    if (props.currentRound < 24) {
+      props.setCurrentRound(props.currentRound + 1);
+      props.setURL(
         `https://api.squiggle.com.au/?q=games;year=2023;round=${
-          currentRound + 1
+          props.currentRound + 1
         }`
       );
     }
@@ -55,7 +48,7 @@ const Matches = (props: Props) => {
 
   const convertToLocalTime = (AUTime: string) => {
     const matchDate = new Date(AUTime);
-    const timeZoneDiff = 14 - now.getTimezoneOffset() / 60;
+    const timeZoneDiff = 14 - props.now.getTimezoneOffset() / 60;
 
     // calculate the local time in milliseconds by subtracting the offset from the API time
     const localTime = matchDate.getTime() + 60 * timeZoneDiff * 60 * 1000;

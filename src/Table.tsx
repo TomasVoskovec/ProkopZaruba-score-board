@@ -1,6 +1,9 @@
+import { Dispatch, SetStateAction } from 'react';
 import useFetch from './useFetch';
 interface Props {
   id: string;
+  URL: string;
+  setURL: Dispatch<SetStateAction<string>>;
 }
 
 interface Team {
@@ -17,6 +20,11 @@ const Table = (props: Props) => {
     'https://api.squiggle.com.au/?q=standings',
     props.id
   );
+
+  const handlClick = () => {
+    props.setURL('https://api.squiggle.com.au/?q=games;year=2023;team=1');
+    console.log(props.URL);
+  };
   return (
     <div className="standings">
       <table>
@@ -53,6 +61,7 @@ const Table = (props: Props) => {
           ))}
         </tbody>
       </table>
+      <button onClick={handlClick}>tady jsem</button>
     </div>
   );
 };
