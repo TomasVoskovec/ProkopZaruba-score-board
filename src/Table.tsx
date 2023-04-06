@@ -15,6 +15,8 @@ interface Team {
   pts: number;
 }
 
+console.log('hello');
+
 const Table = (props: Props) => {
   const { data: teams } = useFetch(
     'https://api.squiggle.com.au/?q=standings',
