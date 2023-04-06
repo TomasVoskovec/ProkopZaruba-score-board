@@ -13,6 +13,7 @@ interface Team {
   draws: number;
   losses: number;
   pts: number;
+  id: number;
 }
 
 const Table = (props: Props) => {
@@ -21,8 +22,11 @@ const Table = (props: Props) => {
     props.id
   );
 
+  const showMatches = (id: number) => {
+    props.setURL(`https://api.squiggle.com.au/?q=games;year=2023;team=${id}`);
+  };
+
   const handlClick = () => {
-    props.setURL('https://api.squiggle.com.au/?q=games;year=2023;team=1');
     console.log(props.URL);
   };
   return (
@@ -32,7 +36,7 @@ const Table = (props: Props) => {
           <tr>
             <th>#</th>
             <th>Team</th>
-            <th></th>
+
             <th>P</th>
             <th>W</th>
             <th>D</th>
@@ -41,17 +45,20 @@ const Table = (props: Props) => {
           </tr>
         </thead>
         <tbody>
+          cl
           {teams?.standings.map((team: Team, i: number) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <td>
-                <img
-                  className="logo"
-                  src={`./imgs/${team.name}.png`}
-                  alt={team.name}
-                />
-              </td>
-              <td>{team.name}</td>
+              <button onClick={() => showMatches(team.id)}>
+                <td>
+                  <img
+                    className="logo"
+                    src={`./imgs/${team.name}.png`}
+                    alt={team.name}
+                  />
+                </td>
+                <td>{team.name}</td>
+              </button>
               <td>{team.played}</td>
               <td>{team.wins}</td>
               <td>{team.draws}</td>
