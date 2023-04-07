@@ -1,10 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import useFetch from './useFetch';
-interface Props {
-  id: string;
-  URL: string;
-  setURL: Dispatch<SetStateAction<string>>;
-}
+import { AppContext } from './App';
 
 interface Team {
   name: string;
@@ -16,18 +12,20 @@ interface Team {
   id: number;
 }
 
-const Table = (props: Props) => {
+const Table = () => {
+  const { URL, setURL } = useContext(AppContext);
+
   const { data: teams } = useFetch(
     'https://api.squiggle.com.au/?q=standings',
-    props.id
+    'table'
   );
 
   const showMatches = (id: number) => {
-    props.setURL(`https://api.squiggle.com.au/?q=games;year=2023;team=${id}`);
+    setURL(`https://api.squiggle.com.au/?q=games;year=2023;team=${id}`);
   };
 
   const handlClick = () => {
-    console.log(props.URL);
+    console.log(URL);
   };
   return (
     <div className="standings">
@@ -36,7 +34,6 @@ const Table = (props: Props) => {
           <tr>
             <th>#</th>
             <th>Team</th>
-
             <th>P</th>
             <th>W</th>
             <th>D</th>
@@ -45,7 +42,6 @@ const Table = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          cl
           {teams?.standings.map((team: Team, i: number) => (
             <tr key={i}>
               <td>{i + 1}</td>

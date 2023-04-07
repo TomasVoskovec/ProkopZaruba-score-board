@@ -1,9 +1,8 @@
 import useFetch from './useFetch';
-import { useEffect, Dispatch, SetStateAction } from 'react';
+import { useEffect, useContext, Dispatch, SetStateAction } from 'react';
+import { AppContext } from './App';
+
 interface Props {
-  id: string;
-  URL: string;
-  setURL: Dispatch<SetStateAction<string>>;
   currentRound: number;
   setCurrentRound: React.Dispatch<React.SetStateAction<number>>;
   now: Date;
@@ -18,16 +17,18 @@ interface Game {
 }
 
 const Matches = (props: Props) => {
-  const { data: matches, refetch } = useFetch(props.URL, props.id);
+  const { URL, setURL } = useContext(AppContext);
+
+  const { data: matches, refetch } = useFetch(URL, 'matches');
 
   useEffect(() => {
     refetch();
-  }, [refetch, props.URL]);
+  }, [refetch, URL]);
 
   const decreaseRound = () => {
     if (props.currentRound > 1) {
       props.setCurrentRound(props.currentRound - 1);
-      props.setURL(
+      setURL(
         `https://api.squiggle.com.au/?q=games;year=2023;round=${
           props.currentRound - 1
         }`
@@ -38,7 +39,7 @@ const Matches = (props: Props) => {
   const increaseRound = () => {
     if (props.currentRound < 24) {
       props.setCurrentRound(props.currentRound + 1);
-      props.setURL(
+      setURL(
         `https://api.squiggle.com.au/?q=games;year=2023;round=${
           props.currentRound + 1
         }`
