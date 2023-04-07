@@ -12,12 +12,13 @@ interface Game {
   date: string;
   hteam: string;
   ateam: string;
+  id: number;
   hscore: number;
   ascore: number;
 }
 
 const Matches = (props: Props) => {
-  const { URL, setURL } = useContext(AppContext);
+  const { URL, setURL, setButtonSet, setMatchID } = useContext(AppContext);
 
   const { data: matches, refetch } = useFetch(URL, 'matches');
 
@@ -63,6 +64,11 @@ const Matches = (props: Props) => {
     return localDate;
   };
 
+  const handleClick = (matchID: string) => {
+    setButtonSet('matchInfo');
+    setMatchID(matchID);
+  };
+
   return (
     <div className="games">
       <button onClick={decreaseRound}>previous round</button>
@@ -70,8 +76,10 @@ const Matches = (props: Props) => {
       {matches?.games.map((game: Game, i: number) => (
         <div key={i}>
           {convertToLocalTime(game.date).toString()} ---{' '}
-          <button>{game.hteam}</button> vs <button>{game.ateam}</button> -----{' '}
-          {game.hscore} - {game.ascore}
+          <button onClick={() => handleClick(`${game.id}`)}>
+            {game.hteam} vs {game.ateam}
+          </button>{' '}
+          ----- {game.hscore} - {game.ascore}
         </div>
       ))}
     </div>

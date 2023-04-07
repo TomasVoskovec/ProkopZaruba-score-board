@@ -1,10 +1,19 @@
 import useFetch from './useFetch';
+import { useContext, useEffect } from 'react';
+import { AppContext } from './App';
 
 const Match = () => {
-  const { data: match } = useFetch(
-    'https://api.squiggle.com.au/?q=games;year=2023;game=34261',
+  const { matchID, setMatchID } = useContext(AppContext);
+
+  const { data: match, refetch } = useFetch(
+    `https://api.squiggle.com.au/?q=games;year=2023;game=${matchID}`,
     'match'
   );
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
   return (
     <div>
       <div>{match?.games[0].date}</div>
