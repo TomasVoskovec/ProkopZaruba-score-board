@@ -1,5 +1,5 @@
 import useFetch from './useFetch';
-import { useEffect, useContext, Dispatch, SetStateAction } from 'react';
+import { useEffect, useContext } from 'react';
 import { AppContext } from './App';
 
 interface Props {
@@ -69,8 +69,9 @@ const Matches = (props: Props) => {
       <button onClick={increaseRound}>next round</button>
       {matches?.games.map((game: Game, i: number) => (
         <div key={i}>
-          {convertToLocalTime(game.date).toString()} --- {game.hteam} vs{' '}
-          {game.ateam} ----- {game.hscore} - {game.ascore}
+          {convertToLocalTime(game.date).toString()} ---{' '}
+          <button>{game.hteam}</button> vs <button>{game.ateam}</button> -----{' '}
+          {game.hscore} - {game.ascore}
         </div>
       ))}
     </div>
