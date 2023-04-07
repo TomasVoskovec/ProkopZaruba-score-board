@@ -7,10 +7,16 @@ import { useState, createContext } from 'react';
 
 export const AppContext = createContext<{
   URL: string;
+  matchID: string;
   setURL: React.Dispatch<React.SetStateAction<string>>;
+  setButtonSet: React.Dispatch<React.SetStateAction<string>>;
+  setMatchID: React.Dispatch<React.SetStateAction<string>>;
 }>({
   URL: '',
+  matchID: '',
   setURL: () => {},
+  setButtonSet: () => {},
+  setMatchID: () => {},
 });
 
 function App() {
@@ -21,6 +27,9 @@ function App() {
       },
     },
   });
+
+  const [buttonsSet, setButtonSet] = useState('rounds');
+  const [matchID, setMatchID] = useState('');
 
   const now: Date = new Date();
   const start: Date = new Date(now.getFullYear(), 0, 0);
@@ -39,14 +48,18 @@ function App() {
     <div className="App">
       <div className="container">
         <QueryClientProvider client={client}>
-          <AppContext.Provider value={{ URL, setURL }}>
+          <AppContext.Provider
+            value={{ URL, setURL, setButtonSet, matchID, setMatchID }}
+          >
             <Table />
-            <Matches
-              currentRound={currentRound}
-              setCurrentRound={setCurrentRound}
-              now={now}
-            />
-            <Match></Match>
+            {(buttonsSet === 'rounds' || buttonsSet === 'teamMatches') && (
+              <Matches
+                currentRound={currentRound}
+                setCurrentRound={setCurrentRound}
+                now={now}
+              />
+            )}
+            {buttonsSet === 'matchInfo' && <Match></Match>}
           </AppContext.Provider>
         </QueryClientProvider>
       </div>

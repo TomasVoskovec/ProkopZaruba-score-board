@@ -13,7 +13,7 @@ interface Team {
 }
 
 const Table = () => {
-  const { URL, setURL } = useContext(AppContext);
+  const { URL, setURL, setButtonSet } = useContext(AppContext);
 
   const { data: teams } = useFetch(
     'https://api.squiggle.com.au/?q=standings',
@@ -22,11 +22,9 @@ const Table = () => {
 
   const showMatches = (id: number) => {
     setURL(`https://api.squiggle.com.au/?q=games;year=2023;team=${id}`);
+    setButtonSet('teamMatches');
   };
 
-  const handlClick = () => {
-    console.log(URL);
-  };
   return (
     <div className="standings">
       <table>
@@ -66,7 +64,6 @@ const Table = () => {
           ))}
         </tbody>
       </table>
-      <button onClick={handlClick}>tady jsem</button>
     </div>
   );
 };
