@@ -2,7 +2,15 @@ import './App.css';
 import Matches from './Matches';
 import Table from './Table';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, useId } from 'react';
+import { useState, createContext } from 'react';
+
+export const AppContext = createContext<{
+  URL: string;
+  setURL: React.Dispatch<React.SetStateAction<string>>;
+}>({
+  URL: '',
+  setURL: () => {},
+});
 
 function App() {
   const client = new QueryClient({
@@ -30,15 +38,14 @@ function App() {
     <div className="App">
       <div className="container">
         <QueryClientProvider client={client}>
-          <Table id={useId()} setURL={setURL} URL={URL} />
-          <Matches
-            id={useId()}
-            setURL={setURL}
-            URL={URL}
-            currentRound={currentRound}
-            setCurrentRound={setCurrentRound}
-            now={now}
-          />
+          <AppContext.Provider value={{ URL, setURL }}>
+            <Table />
+            <Matches
+              currentRound={currentRound}
+              setCurrentRound={setCurrentRound}
+              now={now}
+            />
+          </AppContext.Provider>
         </QueryClientProvider>
       </div>
     </div>
