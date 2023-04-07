@@ -1,6 +1,7 @@
 import './App.css';
 import Matches from './Matches';
 import Table from './Table';
+import Match from './Match';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, createContext } from 'react';
 
@@ -45,6 +46,7 @@ function App() {
               setCurrentRound={setCurrentRound}
               now={now}
             />
+            <Match></Match>
           </AppContext.Provider>
         </QueryClientProvider>
       </div>

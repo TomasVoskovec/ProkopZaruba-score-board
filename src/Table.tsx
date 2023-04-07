@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { useContext } from 'react';
 import useFetch from './useFetch';
 import { AppContext } from './App';
 
@@ -45,16 +45,18 @@ const Table = () => {
           {teams?.standings.map((team: Team, i: number) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <button onClick={() => showMatches(team.id)}>
-                <td>
+
+              <td>
+                <button onClick={() => showMatches(team.id)}>
                   <img
                     className="logo"
                     src={`./imgs/${team.name}.png`}
                     alt={team.name}
                   />
-                </td>
-                <td>{team.name}</td>
-              </button>
+                  {team.name}
+                </button>
+              </td>
+
               <td>{team.played}</td>
               <td>{team.wins}</td>
               <td>{team.draws}</td>
