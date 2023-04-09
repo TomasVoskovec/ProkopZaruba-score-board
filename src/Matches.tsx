@@ -3,8 +3,8 @@ import { useEffect, useContext } from 'react';
 import { AppContext } from './App';
 
 interface Props {
-  currentRound: number;
-  setCurrentRound: React.Dispatch<React.SetStateAction<number>>;
+  round: number;
+  setRound: React.Dispatch<React.SetStateAction<number>>;
   now: Date;
 }
 
@@ -18,35 +18,13 @@ interface Game {
 }
 
 const Matches = (props: Props) => {
-  const { URL, setURL, setButtonSet, setMatchID } = useContext(AppContext);
+  const { URL, setButtonSet, setMatchID } = useContext(AppContext);
 
   const { data: matches, refetch } = useFetch(URL, 'matches');
 
   useEffect(() => {
     refetch();
   }, [refetch, URL]);
-
-  const decreaseRound = () => {
-    if (props.currentRound > 1) {
-      props.setCurrentRound(props.currentRound - 1);
-      setURL(
-        `https://api.squiggle.com.au/?q=games;year=2023;round=${
-          props.currentRound - 1
-        }`
-      );
-    }
-  };
-
-  const increaseRound = () => {
-    if (props.currentRound < 24) {
-      props.setCurrentRound(props.currentRound + 1);
-      setURL(
-        `https://api.squiggle.com.au/?q=games;year=2023;round=${
-          props.currentRound + 1
-        }`
-      );
-    }
-  };
 
   const convertToLocalTime = (AUTime: string) => {
     const matchDate = new Date(AUTime);
@@ -71,8 +49,6 @@ const Matches = (props: Props) => {
 
   return (
     <div className="games">
-      <button onClick={decreaseRound}>previous round</button>
-      <button onClick={increaseRound}>next round</button>
       {matches?.games.map((game: Game, i: number) => (
         <div key={i}>
           {convertToLocalTime(game.date).toString()} ---{' '}
