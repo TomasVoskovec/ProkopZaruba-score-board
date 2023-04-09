@@ -1,25 +1,34 @@
 import useFetch from './useFetch';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { AppContext } from './App';
 
 const Match = () => {
-  const { matchID, setMatchID } = useContext(AppContext);
+  const { matchID } = useContext(AppContext);
 
-  const { data: match, refetch } = useFetch(
+  const { data: match } = useFetch(
     `https://api.squiggle.com.au/?q=games;year=2023;game=${matchID}`,
     'match'
   );
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  const { setURL, setButtonSet } = useContext(AppContext);
+
+  const showMatches = (id: number) => {
+    setURL(`https://api.squiggle.com.au/?q=games;year=2023;team=${id}`);
+    setButtonSet('teamMatches');
+  };
 
   return (
     <div>
       <div>{match?.games[0].date}</div>
       <div>{match?.games[0].venue} stadium</div>
       <div>
-        {match?.games[0].hteam} vs {match?.games[0].ateam}
+        <button onClick={() => showMatches(match?.games[0].hteamid)}>
+          {match?.games[0].hteam}
+        </button>{' '}
+        vs{' '}
+        <button onClick={() => showMatches(match?.games[0].ateamid)}>
+          {match?.games[0].ateam}
+        </button>
       </div>
       <div>
         score {match?.games[0].hscore} : {match?.games[0].ascore}

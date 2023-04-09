@@ -2,18 +2,23 @@ import './App.css';
 import Matches from './Matches';
 import Table from './Table';
 import Match from './Match';
+import MatchNav from './MatchNav';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, createContext } from 'react';
 
 export const AppContext = createContext<{
   URL: string;
   matchID: string;
+  buttonsSet: string;
+  round: number;
   setURL: React.Dispatch<React.SetStateAction<string>>;
   setButtonSet: React.Dispatch<React.SetStateAction<string>>;
   setMatchID: React.Dispatch<React.SetStateAction<string>>;
 }>({
   URL: '',
   matchID: '',
+  buttonsSet: '',
+  round: 0,
   setURL: () => {},
   setButtonSet: () => {},
   setMatchID: () => {},
@@ -37,29 +42,40 @@ function App() {
   const oneDay = 1000 * 60 * 60 * 24;
   const day = Math.floor(diff / oneDay);
 
-  const [currentRound, setCurrentRound] = useState<number>(
-    Math.floor((day - 66) / 7)
-  );
+  const currentRound = Math.floor((day - 66) / 7);
+  const [round, setRound] = useState<number>(currentRound);
 
   const [URL, setURL] = useState(
-    `https://api.squiggle.com.au/?q=games;year=2023;round=${currentRound}`
+    `https://api.squiggle.com.au/?q=games;year=2023;round=${round}`
   );
   return (
     <div className="App">
       <div className="container">
         <QueryClientProvider client={client}>
           <AppContext.Provider
-            value={{ URL, setURL, setButtonSet, matchID, setMatchID }}
+            value={{
+              URL,
+              setURL,
+              round,
+              buttonsSet,
+              setButtonSet,
+              matchID,
+              setMatchID,
+            }}
           >
             <Table />
-            {(buttonsSet === 'rounds' || buttonsSet === 'teamMatches') && (
-              <Matches
+            <div>
+              <MatchNav
+                round={round}
+                setRound={setRound}
                 currentRound={currentRound}
-                setCurrentRound={setCurrentRound}
                 now={now}
-              />
-            )}
-            {buttonsSet === 'matchInfo' && <Match></Match>}
+              ></MatchNav>
+              {(buttonsSet === 'rounds' || buttonsSet === 'teamMatches') && (
+                <Matches round={round} setRound={setRound} now={now} />
+              )}
+              {buttonsSet === 'matchInfo' && <Match></Match>}
+            </div>
           </AppContext.Provider>
         </QueryClientProvider>
       </div>
