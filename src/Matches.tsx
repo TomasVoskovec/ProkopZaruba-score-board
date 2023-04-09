@@ -42,6 +42,12 @@ const Matches = (props: Props) => {
     return localDate;
   };
 
+  const stringDateToNumber = (stringDate: string) => {
+    const date = new Date(stringDate);
+    const dateInMilliseconds = date.getTime();
+    return dateInMilliseconds;
+  };
+
   const handleClick = (matchID: string) => {
     setButtonSet('matchInfo');
     setMatchID(matchID);
@@ -49,15 +55,21 @@ const Matches = (props: Props) => {
 
   return (
     <div className="games">
-      {matches?.games.map((game: Game, i: number) => (
-        <div key={i}>
-          {convertToLocalTime(game.date).toString()} ---{' '}
-          <button onClick={() => handleClick(`${game.id}`)}>
-            {game.hteam} vs {game.ateam}
-          </button>{' '}
-          ----- {game.hscore} - {game.ascore}
-        </div>
-      ))}
+      {matches?.games
+        .slice()
+        .sort(
+          (a: Game, b: Game) =>
+            stringDateToNumber(a.date) - stringDateToNumber(b.date)
+        )
+        .map((game: Game, i: number) => (
+          <div key={i}>
+            {convertToLocalTime(game.date).toString()} ---{' '}
+            <button onClick={() => handleClick(`${game.id}`)}>
+              {game.hteam} vs {game.ateam}
+            </button>{' '}
+            ----- {game.hscore} - {game.ascore}
+          </div>
+        ))}
     </div>
   );
 };
