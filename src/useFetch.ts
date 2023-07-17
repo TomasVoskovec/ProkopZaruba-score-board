@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import Axios from 'axios';
 
 const useFetch = (url: string, key: string) => {
-  const { data, error, refetch } = useQuery([key], async () => {
+  const { data, error, refetch, isLoading } = useQuery([key], async () => {
     const res = await Axios.get(url);
     return res.data;
   });
@@ -11,7 +11,7 @@ const useFetch = (url: string, key: string) => {
     console.log(error);
   }
 
-  return { data, refetch };
+  return { data, refetch, isLoading };
 };
 
 export default useFetch;

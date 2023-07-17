@@ -15,7 +15,7 @@ interface Team {
 const Table = () => {
   const { URL, setURL, setButtonSet } = useContext(AppContext);
 
-  const { data: teams } = useFetch(
+  const { data: teams, isLoading } = useFetch(
     'https://api.squiggle.com.au/?q=standings',
     'table'
   );
@@ -27,11 +27,11 @@ const Table = () => {
 
   return (
     <div className="standings">
-      <table>
+      <table className="standings-table">
         <thead>
           <tr>
             <th>#</th>
-            <th>Team</th>
+            <th className="team-heading">Team</th>
             <th>P</th>
             <th>W</th>
             <th>D</th>
@@ -45,9 +45,12 @@ const Table = () => {
               <td>{i + 1}</td>
 
               <td>
-                <button onClick={() => showMatches(team.id)}>
+                <button
+                  className="team-button"
+                  onClick={() => showMatches(team.id)}
+                >
                   <img
-                    className="logo"
+                    className="logo-table"
                     src={`./imgs/${team.name}.png`}
                     alt={team.name}
                   />
@@ -64,6 +67,7 @@ const Table = () => {
           ))}
         </tbody>
       </table>
+      {isLoading && <p className="loading">loading...</p>}
     </div>
   );
 };

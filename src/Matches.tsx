@@ -1,5 +1,5 @@
 import useFetch from './useFetch';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { AppContext } from './App';
 
 interface Props {
@@ -15,12 +15,14 @@ interface Game {
   id: number;
   hscore: number;
   ascore: number;
+  complete: number;
 }
 
 const Matches = (props: Props) => {
   const { URL, setButtonSet, setMatchID } = useContext(AppContext);
+  const [isHovered, setIsHovered] = useState(-1);
 
-  const { data: matches, refetch } = useFetch(URL, 'matches');
+  const { data: matches, refetch, isLoading } = useFetch(URL, 'matches');
 
   useEffect(() => {
     refetch();
@@ -53,23 +55,70 @@ const Matches = (props: Props) => {
     setMatchID(matchID);
   };
 
+  const handleMouseEnter = (matchNum: number) => {
+    setIsHovered(matchNum);
+    console.log('hey little dude');
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(-1);
+    console.log('hey little dude');
+  };
+
   return (
-    <div className="games">
-      {matches?.games
-        .slice()
-        .sort(
-          (a: Game, b: Game) =>
-            stringDateToNumber(a.date) - stringDateToNumber(b.date)
-        )
-        .map((game: Game, i: number) => (
-          <div key={i}>
-            {convertToLocalTime(game.date).toString()} ---{' '}
-            <button onClick={() => handleClick(`${game.id}`)}>
-              {game.hteam} vs {game.ateam}
-            </button>{' '}
-            ----- {game.hscore} - {game.ascore}
-          </div>
-        ))}
+    <div>
+      {matches && (
+        <div className="games">
+          {' '}
+          {matches.games
+            .slice()
+            .sort(
+              (a: Game, b: Game) =>
+                stringDateToNumber(a.date) - stringDateToNumber(b.date)
+            )
+            .map((game: Game, i: number) => (
+              <div
+                key={i}
+                className={isHovered === i ? 'game game-hovered' : 'game'}
+                onMouseLeave={() => handleMouseLeave()}
+                onMouseEnter={() => handleMouseEnter(i)}
+                onClick={() => handleClick(`${game.id}`)}
+              >
+                <div className="time">
+                  {convertToLocalTime(game.date).toString()}
+                </div>
+                <div className="matches-teams">
+                  <div className="matches-team">
+                    {' '}
+                    <img
+                      className="logo-table"
+                      src={`./imgs/${game.hteam}.png`}
+                      alt={game.hteam}
+                    />
+                    {game.hteam}
+                  </div>
+                  <div className="matches-team">
+                    {' '}
+                    <img
+                      className="logo-table"
+                      src={`./imgs/${game.ateam}.png`}
+                      alt={game.ateam}
+                    />
+                    {game.ateam}
+                  </div>
+                </div>
+                {game.complete < 100 && game.complete > 0 && (
+                  <p className="matches-live">live</p>
+                )}
+                <div className="matches-score">
+                  <div>{game.hscore}</div>
+                  <div>{game.ascore}</div>
+                </div>
+              </div>
+            ))}
+        </div>
+      )}
+      {isLoading && <p className="loading">loading...</p>}
     </div>
   );
 };

@@ -41,19 +41,26 @@ const MatchNav = (props: Props) => {
     setButtonSet('rounds');
   };
   return (
-    <>
+    <div className="match-nav">
       {buttonsSet === 'rounds' && (
         <div>
-          <button onClick={decreaseRound}>previous round</button>
-          <button onClick={increaseRound}>next round</button>
+          <button className="round-button" onClick={decreaseRound}>
+            {'<'}
+          </button>
+          <p className="round-text">round {props.round}</p>
+          <button className="round-button" onClick={increaseRound}>
+            {'>'}
+          </button>
         </div>
       )}
       {(buttonsSet === 'teamMatches' || buttonsSet === 'matchInfo') && (
         <div>
-          <button onClick={backToCurrentRount}>back to current round</button>
+          <button className="back-button" onClick={backToCurrentRount}>
+            back to current round
+          </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
